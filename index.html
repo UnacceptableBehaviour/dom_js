@@ -31,5 +31,143 @@
   </div>
 
   <script src="dom.js"></script>
+  
+  <br>
+  
+  <div class="container">
+    <div id="main" class="card card-body">  
+      <h4>
+          Html Version Traffic Lights - HTML5 / CSS - dom_js
+      </h4>
+      <br>  
+      <table>
+          <tr>
+              <td colspan="5">Roast Toad - Nutrition per 100g - average serving 22g</td>
+              <!-- Thresholds HERE: https://en.wikipedia.org/wiki/Traffic_light_rating_system -->
+          </tr>
+          <tr>
+              <td class="t_lgt_en" id="t_energy_ttl">Energy</td>
+              <td class="t_lgt_fa" id="t_fat_ttl">Fat</td>
+              <td class="t_lgt_fs" id="t_saturates_ttl">Saturates</td>
+              <td class="t_lgt_su" id="t_sugars_ttl">Sugars</td>
+              <td class="t_lgt_sa" id="t_salt_ttl">Salt</td>
+          </tr>
+          <tr>
+              <td class="t_lgt_en" id="t_enery_qty">130</td>
+              <td class="t_lgt_fa" id="t_fat_qty">2</td>
+              <td class="t_lgt_fs" id="t_saturates_qty">4</td>
+              <td class="t_lgt_su" id="t_sugars_qty">6</td>
+              <td class="t_lgt_sa" id="t_salt_qty">3</td>
+          </tr>
+          <tr>
+              <td class="t_lgt_en" id="t_energy_hml">XX</td>
+              <td class="t_lgt_fa" id="t_fat_hml">XX</td>
+              <td class="t_lgt_fs" id="t_saturates_hml">XX</td>
+              <td class="t_lgt_su" id="t_sugars_hml">XX</td>
+              <td class="t_lgt_sa" id="t_salt_hml">XX</td>
+          </tr>
+          <tr>
+              <td class="t_lgt_en" id="t_energy">YY%</td>
+              <td class="t_lgt_fa" id="t_fat">YY%</td>
+              <td class="t_lgt_fs" id="t_saturates">YY%</td>
+              <td class="t_lgt_su" id="t_sugars">YY%</td>
+              <td class="t_lgt_sa" id="t_salt">YY%</td>
+          </tr>
+      </table>
+      <div class="btn-group"> <!-- https://www.w3schools.com/bootstrap/bootstrap_button_groups.asp -->
+        <button id='b_red' onclick=red_button() >RED</button>
+        <button id='b_grn' onclick=green_button() >GRN</button>
+        <button id='b_amb'>AMB</button>
+      </div>
+      <script>
+          function red_button() {
+            console.log("RED BUTTON");
+            refactor_button("REDD");
+            document.getElementById('t_enery_qty').style.backgroundColor='#CB2B0B';
+            
+            
+            var fat = parseFloat( document.getElementById('t_fat_qty').textContent );
+            
+            const lower_thrshhold = 3.0;
+            const upper_thrshhold = 17.5;
+            
+            console.log(`FAT: ${fat}`);
+            console.log(`LIMITS ${lower_thrshhold} - ${upper_thrshhold}`);
+            stylesheet = document.styleSheets[0];
+            
+            if (fat < lower_thrshhold) {
+              console.log(`FAT:GREEN - LOW ${fat}`);
+              //document.getElementById('t_fat_hml').textContent = 'LOW'
+              document.querySelector('#t_fat_hml').textContent = 'LOW'
+              stylesheet.insertRule(".t_lgt_fa { background-color: #3CB938;}", 0);  // green
+              
+            } else if ( (fat >= lower_thrshhold) && (fat <= upper_thrshhold) ){
+              console.log(`FAT:AMBER - MEDIUM ${fat}`);
+              document.getElementById('t_fat_hml').textContent = 'MED';
+              stylesheet.insertRule(".t_lgt_fa { background-color: #FEA150;}", 0);  // amber
+              
+            } else {
+              console.log(`FAT:RED - HIGH ${fat}`);
+              document.getElementById('t_fat_hml').textContent = 'HIGH'
+              stylesheet.insertRule(".t_lgt_fa { background-color: #CB2B0B;}", 0);  // red
+            }
+            console.log(document.styleSheets[0]);            
+          }
+          
+          function green_button() {
+            console.log("GREEN BUTTON");
+            refactor_button("GRREEN");
+                                    
+            var sugar = parseFloat( document.getElementById('t_sugars_qty').textContent );
+            
+            const lower_thrshhold = 5.0;
+            const upper_thrshhold = 22.5;
+            
+            console.log(`FAT: ${sugar}`);
+            console.log(`LIMITS ${lower_thrshhold} - ${upper_thrshhold}`);
+            stylesheet = document.styleSheets[0];
+            
+            if (sugar < lower_thrshhold) {
+              console.log(`SUGAR:GREEN - LOW ${sugar}`);
+              document.getElementById('t_sugars_hml').textContent = 'LOW'
+              bg_colour = '#3CB938'; // green
+              
+            } else if ( (sugar >= lower_thrshhold) && (sugar <= upper_thrshhold) ){
+              console.log(`SUGAR:AMBER - MEDIUM ${sugar}`);
+              document.getElementById('t_sugars_hml').textContent = 'MED'
+              bg_colour = '#FEA150';  // amber
+              
+            } else {
+              console.log(`SUGAR:RED - HIGH ${sugar}`);
+              document.getElementById('t_sugars_hml').textContent = 'HIGH'
+              bg_colour = '#CB2B0B';  // red
+            }
+            
+            column_sugar = document.getElementsByClassName('t_lgt_su');
+            
+            for (var element = 0; column_sugar.length; element++ ){
+              column_sugar[element].style.backgroundColor = bg_colour;
+            }
+            
+          }
+          
+          function amber_button() {
+            console.log("AMBER BUTTON");
+            refactor_button("PINK");
+          }
+          
+          function refactor_button(colour) {            
+            console.log(`${colour} BUTTON`);
+            
+          }
+          
+          
+          // green: background-color: #3CB938;
+          // red: background-color: #CB2B0B;
+          // amber: background-color: #FEA150;
+          
+      </script>
+    </div>
+  </div>
 </body>
 </html>
