@@ -67,17 +67,17 @@
               <td class="t_lgt_sa" id="t_salt_hml">XX</td>
           </tr>
           <tr>
-              <td class="t_lgt_en" id="t_energy">YY%</td>
-              <td class="t_lgt_fa" id="t_fat">YY%</td>
-              <td class="t_lgt_fs" id="t_saturates">YY%</td>
-              <td class="t_lgt_su" id="t_sugars">YY%</td>
-              <td class="t_lgt_sa" id="t_salt">YY%</td>
+              <td class="t_lgt_en" id="t_energy_ri">YY%</td>
+              <td class="t_lgt_fa" id="t_fat_ri">YY%</td>
+              <td class="t_lgt_fs" id="t_saturates_ri">YY%</td>
+              <td class="t_lgt_su" id="t_sugars_ri">YY%</td>
+              <td class="t_lgt_sa" id="t_salt_ri">YY%</td>
           </tr>
       </table>
       <div class="btn-group"> <!-- https://www.w3schools.com/bootstrap/bootstrap_button_groups.asp -->
         <button id='b_red' onclick=red_button() >RED</button>
         <button id='b_grn' onclick=green_button() >GRN</button>
-        <button id='b_amb'>AMB</button>
+        <button id='b_amb' onclick=amber_button() >AMB</button>
       </div>
       <script>
           function red_button() {
@@ -88,20 +88,20 @@
             
             var fat = parseFloat( document.getElementById('t_fat_qty').textContent );
             
-            const lower_thrshhold = 3.0;
-            const upper_thrshhold = 17.5;
+            const lower_threshold = 3.0;
+            const upper_threshold = 17.5;
             
             console.log(`FAT: ${fat}`);
-            console.log(`LIMITS ${lower_thrshhold} - ${upper_thrshhold}`);
+            console.log(`LIMITS ${lower_threshold} - ${upper_threshold}`);
             stylesheet = document.styleSheets[0];
             
-            if (fat < lower_thrshhold) {
+            if (fat < lower_threshold) {
               console.log(`FAT:GREEN - LOW ${fat}`);
               //document.getElementById('t_fat_hml').textContent = 'LOW'
               document.querySelector('#t_fat_hml').textContent = 'LOW'
               stylesheet.insertRule(".t_lgt_fa { background-color: #3CB938;}", 0);  // green
               
-            } else if ( (fat >= lower_thrshhold) && (fat <= upper_thrshhold) ){
+            } else if ( (fat >= lower_threshold) && (fat <= upper_threshold) ){
               console.log(`FAT:AMBER - MEDIUM ${fat}`);
               document.getElementById('t_fat_hml').textContent = 'MED';
               stylesheet.insertRule(".t_lgt_fa { background-color: #FEA150;}", 0);  // amber
@@ -120,19 +120,19 @@
                                     
             var sugar = parseFloat( document.getElementById('t_sugars_qty').textContent );
             
-            const lower_thrshhold = 5.0;
-            const upper_thrshhold = 22.5;
+            const lower_threshold = 5.0;
+            const upper_threshold = 22.5;
             
             console.log(`FAT: ${sugar}`);
-            console.log(`LIMITS ${lower_thrshhold} - ${upper_thrshhold}`);
+            console.log(`LIMITS ${lower_threshold} - ${upper_threshold}`);
             stylesheet = document.styleSheets[0];
             
-            if (sugar < lower_thrshhold) {
+            if (sugar < lower_threshold) {
               console.log(`SUGAR:GREEN - LOW ${sugar}`);
               document.getElementById('t_sugars_hml').textContent = 'LOW'
               bg_colour = '#3CB938'; // green
               
-            } else if ( (sugar >= lower_thrshhold) && (sugar <= upper_thrshhold) ){
+            } else if ( (sugar >= lower_threshold) && (sugar <= upper_threshold) ){
               console.log(`SUGAR:AMBER - MEDIUM ${sugar}`);
               document.getElementById('t_sugars_hml').textContent = 'MED'
               bg_colour = '#FEA150';  // amber
@@ -145,7 +145,7 @@
             
             column_sugar = document.getElementsByClassName('t_lgt_su');
             
-            for (var element = 0; column_sugar.length; element++ ){
+            for (var element = 0; column_sugar.length-1; element++ ){
               column_sugar[element].style.backgroundColor = bg_colour;
             }
             
@@ -154,12 +154,63 @@
           function amber_button() {
             console.log("AMBER BUTTON");
             refactor_button("PINK");
+            format_nutrition_table_column_colours(4, "t_lgt_fs", 1.5, 5.0, 20, 't_saturates_hml', 't_saturates_ri' );
           }
           
           function refactor_button(colour) {            
-            console.log(`${colour} BUTTON`);
-            
+            console.log(`${colour} BUTTON`);             
           }
+
+
+          // there should be a liquids version of this too!
+          // carbs ref = 260g
+          // protein ref = 50g
+          var nut_cols = {
+            "t_lgt_en":{lower:0, upper:5000, rda:2000},
+            "t_lgt_fa":{lower:3.0, upper:17.5, rda:70},
+            "t_lgt_fs":{lower:1.5, upper:5.0, rda:20, id_hml:'t_saturates_hml', id_rda:'t_saturates_ri'},
+            "t_lgt_su":{lower:5.0, upper:22.5, rda:90},
+            "t_lgt_sa":{lower:0.3, upper:1.5, rda:6}
+          };
+          
+          var col_mapping = {
+            'LOW':'#3CB938', // green
+            'MED':'#FEA150',  // amber
+            'HIGH':'#CB2B0B',  // red
+          };
+          
+          //var nut_qty = parseFloat( document.getElementById('t_sugars_qty').textContent );
+
+          function format_nutrition_table_column_colours(nut_qty, column, lower_threshold, upper_threshold, rda, id_hml, id_ri ){
+            
+            console.log('- - -');
+            console.log(`COL:${column} - ${nut_qty} <`);
+            console.log(`LIMITS ${lower_threshold} - ${upper_threshold}`);            
+            
+            if (nut_qty < lower_threshold) {
+              heat = 'LOW';
+
+            } else if ( (nut_qty >= lower_threshold) && (nut_qty <= upper_threshold) ){
+              heat = 'MED';
+              
+            } else {
+              heat = 'HIGH';
+
+            }
+
+            console.log(`HEAT: ${heat} < - COLOUR: ${col_mapping[heat]} <`);
+            document.getElementById(id_hml).textContent = heat;
+            document.getElementById(id_ri).textContent = `${Math.round(parseFloat(nut_qty)/parseFloat(rda) * 100)}%`;
+            
+            column_sugar = document.getElementsByClassName(column);
+            
+            console.log(column_sugar)
+            
+            for (var element = 0; column_sugar.length-1; element++ ){
+              column_sugar[element].style.backgroundColor = col_mapping[heat];
+            }            
+          }
+          
           
           
           // green: background-color: #3CB938;
