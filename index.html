@@ -75,92 +75,9 @@
           </tr>
       </table>
       <div class="btn-group"> <!-- https://www.w3schools.com/bootstrap/bootstrap_button_groups.asp -->
-        <button id='b_red' onclick=red_button() >RED</button>
-        <button id='b_grn' onclick=green_button() >GRN</button>
-        <button id='b_amb' onclick=amber_button() >AMB</button>
-        <button id='b_blu' onclick=blue_button() >BLU</button>
+        <button id='b_red' onclick=fill_in_nutrients_table() >UPDATE</button>
       </div>
       <script>
-          function red_button() {
-            console.log("RED BUTTON");
-            refactor_button("REDD");
-            document.getElementById('t_energy_qty').style.backgroundColor='#CB2B0B';
-            
-            
-            var fat = parseFloat( document.getElementById('t_fat_qty').textContent );
-            
-            const lower_threshold = 3.0;
-            const upper_threshold = 17.5;
-            
-            console.log(`FAT: ${fat}`);
-            console.log(`LIMITS ${lower_threshold} - ${upper_threshold}`);
-            stylesheet = document.styleSheets[0];
-            
-            if (fat < lower_threshold) {
-              console.log(`FAT:GREEN - LOW ${fat}`);
-              //document.getElementById('t_fat_hml').textContent = 'LOW'
-              document.querySelector('#t_fat_hml').textContent = 'LOW'
-              stylesheet.insertRule(".t_lgt_fa { background-color: #3CB938;}", 0);  // green
-              
-            } else if ( (fat >= lower_threshold) && (fat <= upper_threshold) ){
-              console.log(`FAT:AMBER - MEDIUM ${fat}`);
-              document.getElementById('t_fat_hml').textContent = 'MED';
-              stylesheet.insertRule(".t_lgt_fa { background-color: #FEA150;}", 0);  // amber
-              
-            } else {
-              console.log(`FAT:RED - HIGH ${fat}`);
-              document.getElementById('t_fat_hml').textContent = 'HIGH'
-              stylesheet.insertRule(".t_lgt_fa { background-color: #CB2B0B;}", 0);  // red
-            }
-            console.log(document.styleSheets[0]);            
-          }
-          
-          function green_button() {
-            console.log("GREEN BUTTON");
-            refactor_button("GRREEN");
-                                    
-            var sugar = parseFloat( document.getElementById('t_sugars_qty').textContent );
-            
-            const lower_threshold = 5.0;
-            const upper_threshold = 22.5;
-            
-            console.log(`FAT: ${sugar}`);
-            console.log(`LIMITS ${lower_threshold} - ${upper_threshold}`);
-            stylesheet = document.styleSheets[0];
-            
-            if (sugar < lower_threshold) {
-              console.log(`SUGAR:GREEN - LOW ${sugar}`);
-              document.getElementById('t_sugars_hml').textContent = 'LOW'
-              bg_colour = '#3CB938'; // green
-              
-            } else if ( (sugar >= lower_threshold) && (sugar <= upper_threshold) ){
-              console.log(`SUGAR:AMBER - MEDIUM ${sugar}`);
-              document.getElementById('t_sugars_hml').textContent = 'MED'
-              bg_colour = '#FEA150';  // amber
-              
-            } else {
-              console.log(`SUGAR:RED - HIGH ${sugar}`);
-              document.getElementById('t_sugars_hml').textContent = 'HIGH'
-              bg_colour = '#CB2B0B';  // red
-            }
-            
-            column_sugar = document.getElementsByClassName('t_lgt_su');
-            
-            for (var element = 0; column_sugar.length-1; element++ ){
-              column_sugar[element].style.backgroundColor = bg_colour;
-            }
-            
-          }
-          
-          function amber_button() {
-            console.log("AMBER BUTTON");
-            refactor_button("PINK");
-            format_nutrition_table_column_colours(4, "t_lgt_fs", 1.5, 5.0, 20, 't_saturates_hml', 't_saturates_ri' );
-          }
-          
-          function refactor_button(colour) {            
-            console.log(`${colour} BUTTON`);             
-          }
 
           function format_nutrition_table_column_colours(nut_qty, column, lower_threshold, upper_threshold, rda, id_qty, id_hml, id_ri, multiplier ){
                                     
@@ -244,16 +161,15 @@
           
           }
           
-          // green: background-color: #3CB938;
-          // red: background-color: #CB2B0B;
-          // amber: background-color: #FEA150;
-          function blue_button() {
+          
+          // pass a nutrints object in to function and let the helpers to the rest!
+          function fill_in_nutrients_table() {
             console.log('PAGE_LOADED - FILL NUTIRENTS');
                         
             // struct / JSON
             nutrients = {
               rcp_id: 6,
-              recipe_title: 'light apricot cous cous',
+              recipe_title: 'Light Apricot Cous Cous',
               n_En: 154.0,
               n_Fa: 3.12,
               n_Fs: 1.33,
