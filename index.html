@@ -42,7 +42,7 @@
       <br>  
       <table>
           <tr>
-              <td colspan="5">Roast Toad - Nutrition per 100g - average serving 22g</td>
+              <td id='traffic_title' colspan="5">title text to fill in . . </td>
               <!-- Thresholds HERE: https://en.wikipedia.org/wiki/Traffic_light_rating_system -->
           </tr>
           <tr>
@@ -53,11 +53,11 @@
               <td class="t_lgt_sa" id="t_salt_ttl">Salt</td>
           </tr>
           <tr>
-              <td class="t_lgt_en" id="t_enery_qty">130</td>
-              <td class="t_lgt_fa" id="t_fat_qty">2</td>
-              <td class="t_lgt_fs" id="t_saturates_qty">4</td>
-              <td class="t_lgt_su" id="t_sugars_qty">6</td>
-              <td class="t_lgt_sa" id="t_salt_qty">3</td>
+              <td class="t_lgt_en" id="t_energy_qty">QTY</td>
+              <td class="t_lgt_fa" id="t_fat_qty">QTY</td>
+              <td class="t_lgt_fs" id="t_saturates_qty">QTY</td>
+              <td class="t_lgt_su" id="t_sugars_qty">QTY</td>
+              <td class="t_lgt_sa" id="t_salt_qty">QTY</td>
           </tr>
           <tr>
               <td class="t_lgt_en" id="t_energy_hml">XX</td>
@@ -78,12 +78,13 @@
         <button id='b_red' onclick=red_button() >RED</button>
         <button id='b_grn' onclick=green_button() >GRN</button>
         <button id='b_amb' onclick=amber_button() >AMB</button>
+        <button id='b_blu' onclick=blue_button() >BLU</button>
       </div>
       <script>
           function red_button() {
             console.log("RED BUTTON");
             refactor_button("REDD");
-            document.getElementById('t_enery_qty').style.backgroundColor='#CB2B0B';
+            document.getElementById('t_energy_qty').style.backgroundColor='#CB2B0B';
             
             
             var fat = parseFloat( document.getElementById('t_fat_qty').textContent );
@@ -161,28 +162,14 @@
             console.log(`${colour} BUTTON`);             
           }
 
+          function format_nutrition_table_column_colours(nut_qty, column, lower_threshold, upper_threshold, rda, id_qty, id_hml, id_ri, multiplier ){
+                                    
+            var col_mapping = {
+              'LOW':'#3CB938', // green
+              'MED':'#FEA150',  // amber
+              'HIGH':'#CB2B0B',  // red
+            };            
 
-          // there should be a liquids version of this too!
-          // carbs ref = 260g
-          // protein ref = 50g
-          var nut_cols = {
-            "t_lgt_en":{lower:0, upper:5000, rda:2000},
-            "t_lgt_fa":{lower:3.0, upper:17.5, rda:70},
-            "t_lgt_fs":{lower:1.5, upper:5.0, rda:20, id_hml:'t_saturates_hml', id_rda:'t_saturates_ri'},
-            "t_lgt_su":{lower:5.0, upper:22.5, rda:90},
-            "t_lgt_sa":{lower:0.3, upper:1.5, rda:6}
-          };
-          
-          var col_mapping = {
-            'LOW':'#3CB938', // green
-            'MED':'#FEA150',  // amber
-            'HIGH':'#CB2B0B',  // red
-          };
-          
-          //var nut_qty = parseFloat( document.getElementById('t_sugars_qty').textContent );
-
-          function format_nutrition_table_column_colours(nut_qty, column, lower_threshold, upper_threshold, rda, id_hml, id_ri ){
-            
             console.log('- - -');
             console.log(`COL:${column} - ${nut_qty} <`);
             console.log(`LIMITS ${lower_threshold} - ${upper_threshold}`);            
@@ -198,24 +185,86 @@
 
             }
 
-            console.log(`HEAT: ${heat} < - COLOUR: ${col_mapping[heat]} <`);
+            console.log(`HEAT: ${heat} < - COLOUR: ${col_mapping[heat]} < id: ${id_qty}`);
+            
+            serving_qty = parseFloat(nut_qty) * multiplier;
+            
+            document.getElementById(id_qty).textContent = nut_qty;
+            
+            console.log(`HEAT: ${heat} < - COLOUR: ${col_mapping[heat]} < id: ${id_hml}`);
             document.getElementById(id_hml).textContent = heat;
-            document.getElementById(id_ri).textContent = `${Math.round(parseFloat(nut_qty)/parseFloat(rda) * 100)}%`;
             
-            column_sugar = document.getElementsByClassName(column);
+            document.getElementById(id_ri).textContent = `${Math.round(serving_qty/parseFloat(rda) * 100)}%`;
             
-            console.log(column_sugar)
+            column_elements = document.getElementsByClassName(column);
             
-            for (var element = 0; column_sugar.length-1; element++ ){
-              column_sugar[element].style.backgroundColor = col_mapping[heat];
-            }            
+            console.log(column_elements)
+            
+            for (var element = 0; element < column_elements.length; element++ ){
+              console.log(element);
+              console.log(column_elements[element]);
+              column_elements[element].style.backgroundColor = col_mapping[heat];
+            }
+            
           }
           
+          function fill_and_format_nutrients(nutrients){
+                        
+            document.getElementById('traffic_title').textContent = `${nutrients.recipe_title} - Nutrition per ${ Math.round(nutrients.serving_size) }g serving`;                        
+            
+            const multiplier = parseFloat(nutrients.serving_size)/100.0  // EG x1.6 got a serving size of 160g
+            
+            // lower & upper thresholds are per 100g
+            // displayed numbers are numbers per serving!
+            // there should be a liquids version of this too!
+            // carbs ref = 260g
+            // protein ref = 50g
+            var nut_cols = {
+              n_En:{column_class: "t_lgt_en", lower:0, upper:5000, rda:2000, id_qty:'t_energy_qty', id_hml:'t_energy_hml', id_ri:'t_energy_ri'},
+              n_Fa:{column_class: "t_lgt_fa", lower:3.0, upper:17.5, rda:70, id_qty:'t_fat_qty', id_hml:'t_fat_hml', id_ri:'t_fat_ri'},
+              n_Fs:{column_class: "t_lgt_fs", lower:1.5, upper:5.0, rda:20,  id_qty:'t_saturates_qty', id_hml:'t_saturates_hml', id_ri:'t_saturates_ri'},
+              n_Su:{column_class: "t_lgt_su", lower:5.0, upper:22.5, rda:90, id_qty:'t_sugars_qty', id_hml:'t_sugars_hml', id_ri:'t_sugars_ri'},
+              n_Sa:{column_class: "t_lgt_sa", lower:0.3, upper:1.5, rda:6,   id_qty:'t_salt_qty', id_hml:'t_salt_hml', id_ri:'t_salt_ri'}
+            };
+
+            for (var col in nut_cols) {
+              // nut_qty, column, lower_threshold, upper_threshold, rda, id_hml, id_ri
+              console.log(col);              
+              console.log(`${col} nut_qty:${nutrients[col]} column_class:${nut_cols[col].column_class} lower:${nut_cols[col].lower} upper:${nut_cols[col].upper} rda:${nut_cols[col].rda} id_qty:${nut_cols[col].id_qty} id_hml:${nut_cols[col].id_hml} id_ri:${nut_cols[col].id_ri} `);              
+              format_nutrition_table_column_colours(nutrients[col],
+                                                    nut_cols[col].column_class,
+                                                    nut_cols[col].lower,
+                                                    nut_cols[col].upper,
+                                                    nut_cols[col].rda,
+                                                    nut_cols[col].id_qty,
+                                                    nut_cols[col].id_hml,
+                                                    nut_cols[col].id_ri,
+                                                    multiplier );
+            }
           
+          }
           
           // green: background-color: #3CB938;
           // red: background-color: #CB2B0B;
           // amber: background-color: #FEA150;
+          function blue_button() {
+            console.log('PAGE_LOADED - FILL NUTIRENTS');
+                        
+            // struct / JSON
+            nutrients = {
+              rcp_id: 6,
+              recipe_title: 'light apricot cous cous',
+              n_En: 154.0,
+              n_Fa: 3.12,
+              n_Fs: 1.33,
+              n_Su: 2.93,
+              n_Sa: 0.58,
+              serving_size: 190.0
+            };
+
+            fill_and_format_nutrients(nutrients);
+            
+          }
           
       </script>
     </div>
