@@ -126,36 +126,55 @@ document.querySelector('div.btn-group').appendChild(clear_button);
 // var insertedNode = parentNode.insertBefore(newNode, referenceNode);
 //document.querySelector('div.btn-group').insertBefore(clear_button, b_update); // YES!!
 
-clear_button.addEventListener('click', clear_table_contents)
+clear_button.addEventListener('click', clear_table_contents);
+
+clear_button.addEventListener('mousedown', clear_table_colours);
 
 function clear_table_contents(){
   
   console.log('FIRE: clear_table_contens')
   
   nut_table = document.querySelector('.nutri_taffic_table');
-  
-  // reset to ALL white background
-  
-  
+
   // reset text to QTY - <tr class='row_qty'>
-  cells = document.getElementsByClassName('row_qty')  // give row only!
-  cells = document.querySelectorAll('.row_qty td')    // USE all . dot class space tag_name(s)
+  // reset text to XX - <tr class='row_hml'>  
+  // reset text to YY% - <tr class='row_ri'> 
+  var row_reset_values = {
+    'row_qty':'QTY',
+    'row_hml':'XX',
+    'row_ri':'YY%'
+  };
+
+  for (var row in row_reset_values){
+    console.log(`.$(row) td`);
     
-  console.log(cells);
+    cells = document.getElementsByClassName(`.${row}`);   // give row only!
+    cells = document.querySelectorAll(`.${row} td`);      // use ALL . dot class space tag_name(s)
+    
+    console.log(cells);
   
-  //return;
+    for (c=0; c < cells.length; c++) {
+
+      cells[c].textContent = row_reset_values[row];
+
+    }
+    
+  }
+  
+  document.getElementById('traffic_title').textContent = 'title text to fill in . . ';
+ 
+}
+
+// reset to ALL cells to white background
+function clear_table_colours(){
   
   const WHITE = "#FFFFFF";
   
-  for (c=0; c < cells.length; c++) {
-    cells[c].textContent = 'QTY';
-    //cells[c].style.backgroundColor = WHITE;
+  all_table_cells = document.querySelectorAll('.nutri_taffic_table *')
+
+  for ( cell=0; cell < all_table_cells.length; cell++){
+    all_table_cells[cell].style.backgroundColor = WHITE;
   }
-  
-  
-  // reset text to XX - <tr class='row_hml'>
-  
-  // reset text to YY% - <tr class='row_ri'> 
   
 }
 
