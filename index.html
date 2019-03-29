@@ -75,7 +75,7 @@
           </tr>
       </table>
       <div class="btn-group"> <!-- https://www.w3schools.com/bootstrap/bootstrap_button_groups.asp -->
-        <button id='b_red' onclick=fill_in_nutrients_table() >UPDATE</button>
+        <button id='b_update'>UPDATE</button>
       </div>
       <script>
 
@@ -179,8 +179,12 @@
             };
 
             fill_and_format_nutrients(nutrients);
-            
+          
           }
+          
+          // attach an event listener to the button
+          document.querySelector('#b_update').addEventListener('click', fill_in_nutrients_table)
+          
           
       </script>
     </div>
