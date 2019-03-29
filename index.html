@@ -40,33 +40,33 @@
           Html Version Traffic Lights - HTML5 / CSS - dom_js
       </h4>
       <br>  
-      <table>
+      <table class='nutri_taffic_table'>
           <tr>
               <td id='traffic_title' colspan="5">title text to fill in . . </td>
               <!-- Thresholds HERE: https://en.wikipedia.org/wiki/Traffic_light_rating_system -->
           </tr>
-          <tr>
+          <tr class='row_ttl'>
               <td class="t_lgt_en" id="t_energy_ttl">Energy</td>
               <td class="t_lgt_fa" id="t_fat_ttl">Fat</td>
               <td class="t_lgt_fs" id="t_saturates_ttl">Saturates</td>
               <td class="t_lgt_su" id="t_sugars_ttl">Sugars</td>
               <td class="t_lgt_sa" id="t_salt_ttl">Salt</td>
           </tr>
-          <tr>
+          <tr class='row_qty'>
               <td class="t_lgt_en" id="t_energy_qty">QTY</td>
               <td class="t_lgt_fa" id="t_fat_qty">QTY</td>
               <td class="t_lgt_fs" id="t_saturates_qty">QTY</td>
               <td class="t_lgt_su" id="t_sugars_qty">QTY</td>
               <td class="t_lgt_sa" id="t_salt_qty">QTY</td>
           </tr>
-          <tr>
+          <tr class='row_hml'>
               <td class="t_lgt_en" id="t_energy_hml">XX</td>
               <td class="t_lgt_fa" id="t_fat_hml">XX</td>
               <td class="t_lgt_fs" id="t_saturates_hml">XX</td>
               <td class="t_lgt_su" id="t_sugars_hml">XX</td>
               <td class="t_lgt_sa" id="t_salt_hml">XX</td>
           </tr>
-          <tr>
+          <tr class='row_ri'>
               <td class="t_lgt_en" id="t_energy_ri">YY%</td>
               <td class="t_lgt_fa" id="t_fat_ri">YY%</td>
               <td class="t_lgt_fs" id="t_saturates_ri">YY%</td>
@@ -77,116 +77,7 @@
       <div class="btn-group"> <!-- https://www.w3schools.com/bootstrap/bootstrap_button_groups.asp -->
         <button id='b_update'>UPDATE</button>
       </div>
-      <script>
-
-          function format_nutrition_table_column_colours(nut_qty, column, lower_threshold, upper_threshold, rda, id_qty, id_hml, id_ri, multiplier ){
-                                    
-            var col_mapping = {
-              'LOW':'#3CB938', // green
-              'MED':'#FEA150',  // amber
-              'HIGH':'#CB2B0B',  // red
-            };            
-
-            console.log('- - -');
-            console.log(`COL:${column} - ${nut_qty} <`);
-            console.log(`LIMITS ${lower_threshold} - ${upper_threshold}`);            
-            
-            if (nut_qty < lower_threshold) {
-              heat = 'LOW';
-
-            } else if ( (nut_qty >= lower_threshold) && (nut_qty <= upper_threshold) ){
-              heat = 'MED';
-              
-            } else {
-              heat = 'HIGH';
-
-            }
-
-            console.log(`HEAT: ${heat} < - COLOUR: ${col_mapping[heat]} < id: ${id_qty}`);
-            
-            serving_qty = parseFloat(nut_qty) * multiplier;
-            
-            document.getElementById(id_qty).textContent = nut_qty;
-            
-            console.log(`HEAT: ${heat} < - COLOUR: ${col_mapping[heat]} < id: ${id_hml}`);
-            document.getElementById(id_hml).textContent = heat;
-            
-            document.getElementById(id_ri).textContent = `${Math.round(serving_qty/parseFloat(rda) * 100)}%`;
-            
-            column_elements = document.getElementsByClassName(column);
-            
-            console.log(column_elements)
-            
-            for (var element = 0; element < column_elements.length; element++ ){
-              console.log(element);
-              console.log(column_elements[element]);
-              column_elements[element].style.backgroundColor = col_mapping[heat];
-            }
-            
-          }
-          
-          function fill_and_format_nutrients(nutrients){
-                        
-            document.getElementById('traffic_title').textContent = `${nutrients.recipe_title} - Nutrition per ${ Math.round(nutrients.serving_size) }g serving`;                        
-            
-            const multiplier = parseFloat(nutrients.serving_size)/100.0  // EG x1.6 got a serving size of 160g
-            
-            // lower & upper thresholds are per 100g
-            // displayed numbers are numbers per serving!
-            // there should be a liquids version of this too!
-            // carbs ref = 260g
-            // protein ref = 50g
-            var nut_cols = {
-              n_En:{column_class: "t_lgt_en", lower:0, upper:5000, rda:2000, id_qty:'t_energy_qty', id_hml:'t_energy_hml', id_ri:'t_energy_ri'},
-              n_Fa:{column_class: "t_lgt_fa", lower:3.0, upper:17.5, rda:70, id_qty:'t_fat_qty', id_hml:'t_fat_hml', id_ri:'t_fat_ri'},
-              n_Fs:{column_class: "t_lgt_fs", lower:1.5, upper:5.0, rda:20,  id_qty:'t_saturates_qty', id_hml:'t_saturates_hml', id_ri:'t_saturates_ri'},
-              n_Su:{column_class: "t_lgt_su", lower:5.0, upper:22.5, rda:90, id_qty:'t_sugars_qty', id_hml:'t_sugars_hml', id_ri:'t_sugars_ri'},
-              n_Sa:{column_class: "t_lgt_sa", lower:0.3, upper:1.5, rda:6,   id_qty:'t_salt_qty', id_hml:'t_salt_hml', id_ri:'t_salt_ri'}
-            };
-
-            for (var col in nut_cols) {
-              // nut_qty, column, lower_threshold, upper_threshold, rda, id_hml, id_ri
-              console.log(col);              
-              console.log(`${col} nut_qty:${nutrients[col]} column_class:${nut_cols[col].column_class} lower:${nut_cols[col].lower} upper:${nut_cols[col].upper} rda:${nut_cols[col].rda} id_qty:${nut_cols[col].id_qty} id_hml:${nut_cols[col].id_hml} id_ri:${nut_cols[col].id_ri} `);              
-              format_nutrition_table_column_colours(nutrients[col],
-                                                    nut_cols[col].column_class,
-                                                    nut_cols[col].lower,
-                                                    nut_cols[col].upper,
-                                                    nut_cols[col].rda,
-                                                    nut_cols[col].id_qty,
-                                                    nut_cols[col].id_hml,
-                                                    nut_cols[col].id_ri,
-                                                    multiplier );
-            }
-          
-          }
-          
-          
-          // pass a nutrints object in to function and let the helpers to the rest!
-          function fill_in_nutrients_table() {
-            console.log('PAGE_LOADED - FILL NUTIRENTS');
-                        
-            // struct / JSON
-            nutrients = {
-              rcp_id: 6,
-              recipe_title: 'Light Apricot Cous Cous',
-              n_En: 154.0,
-              n_Fa: 3.12,
-              n_Fs: 1.33,
-              n_Su: 2.93,
-              n_Sa: 0.58,
-              serving_size: 190.0
-            };
-
-            fill_and_format_nutrients(nutrients);
-          
-          }
-          
-          // attach an event listener to the button
-          document.querySelector('#b_update').addEventListener('click', fill_in_nutrients_table)
-          
-          
-      </script>
+      <script src='nutrient_traffic_lights.js'></script>
     </div>
   </div>
 </body>
