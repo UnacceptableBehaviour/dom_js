@@ -1,88 +1,67 @@
-// EXAMINE THE DOCUMENT OBJECT //
+var form = document.getElementById('addForm');
+var itemList = document.getElementById('items');
+var filter = document.getElementById('filter');
 
-// console.dir(document);
- //console.log(document.domain);
- //console.log(document.URL);
- //console.log(document.title);
-// //document.title =  123;
-// console.log(document.all);
-// console.log(document.all[10]);
-// // document.all[10].textContent = 'Hello';
-console.log(document.forms[0]);
-// console.log(document.links);
-// console.log(document.images);
+// Form submit event
+form.addEventListener('submit', addItem);
+// Delete event
+itemList.addEventListener('click', removeItem);
+// Filter event
+filter.addEventListener('keyup', filterItems);
 
-// GETELEMENTBYID //
-// console.log(document.getElementById('header-title'));
-// var headerTitle = document.getElementById('header-title');
-var header = document.getElementById('main-header');
-// console.log(headerTitle);
-// headerTitle.textContent = 'Hello';
-// headerTitle.innerText = 'Goodbye';
-// console.log(headerTitle.innerText);
-// headerTitle.innerHTML = '<h3>Hello</h3>';
-header.style.borderBottom = 'solid 3px #000';
+// Add item
+function addItem(e){
+  e.preventDefault();
 
-// GETELEMENTSBYCLASSNAME //
-var items = document.getElementsByClassName('list-group-item');
-console.log(items);
-console.log(items[1]);
-items[1].textContent = 'Hello 2';
-// items[1].style.fontWeight = 'bold';
-items[1].style.backgroundColor = 'yellow';
+  // Get input value
+  var newItem = document.getElementById('item').value;
 
-// // Gives error
-// //items.style.backgroundColor = '#f4f4f4';
+  // Create new li element
+  var li = document.createElement('li');
+  // Add class
+  li.className = 'list-group-item';
+  // Add text node with input value
+  li.appendChild(document.createTextNode(newItem));
 
-// for(var i = 0; i < items.length; i++){
-//   items[i].style.backgroundColor = '#f4f4f4';
-// }
+  // Create del button element
+  var deleteBtn = document.createElement('button');
 
-// GETELEMENTSBYTAGNAME //
-// var li = document.getElementsByTagName('li');
-// console.log(li);
-// console.log(li[1]);
-// li[1].textContent = 'Hello 2';
-// li[1].style.fontWeight = 'bold';
-// li[1].style.backgroundColor = 'yellow';
+  // Add classes to del button
+  deleteBtn.className = 'btn btn-danger btn-sm float-right delete';
 
-// // Gives error
-// //items.style.backgroundColor = '#f4f4f4';
+  // Append text node
+  deleteBtn.appendChild(document.createTextNode('X'));
 
-// for(var i = 0; i < li.length; i++){
-//   li[i].style.backgroundColor = '#f4f4f4';
-// }
+  // Append button to li
+  li.appendChild(deleteBtn);
 
-// QUERYSELECTOR //
-// var header = document.querySelector('#main-header');
-// header.style.borderBottom = 'solid 4px #ccc';
+  // Append li to list
+  itemList.appendChild(li);
+}
 
-// var input = document.querySelector('input');
-// input.value = 'Hello World'
+// Remove item
+function removeItem(e){
+  if(e.target.classList.contains('delete')){
+    if(confirm('Are You Sure?')){
+      var li = e.target.parentElement;
+      itemList.removeChild(li);
+    }
+  }
+}
 
-// var submit = document.querySelector('input[type="submit"]');
-// submit.value="SEND"
-
-// var item = document.querySelector('.list-group-item');
-// item.style.color = 'red';
-
-// var lastItem = document.querySelector('.list-group-item:last-child');
-// lastItem.style.color = 'blue';
-
-// var secondItem = document.querySelector('.list-group-item:nth-child(2)');
-// secondItem.style.color = 'coral';
-
-// QUERYSELECTORALL //
-// var titles = document.querySelectorAll('.title');
-
-// console.log(titles);
-// titles[0].textContent = 'Hello';
-
-// var odd = document.querySelectorAll('li:nth-child(odd)');
-// var even= document.querySelectorAll('li:nth-child(even)');
-
-// for(var i = 0; i < odd.length; i++){
-//   odd[i].style.backgroundColor = '#f4f4f4';
-//   even[i].style.backgroundColor = '#ccc';
-// }
-
+// Filter Items
+function filterItems(e){
+  // convert text to lowercase
+  var text = e.target.value.toLowerCase();
+  // Get lis
+  var items = itemList.getElementsByTagName('li');
+  // Convert to an array
+  Array.from(items).forEach(function(item){
+    var itemName = item.firstChild.textContent;
+    if(itemName.toLowerCase().indexOf(text) != -1){
+      item.style.display = 'block';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
